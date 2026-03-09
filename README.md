@@ -54,14 +54,7 @@
 | **Ⅳ. 禁名** | 「影子是不需要名字的。」 | 請勿留下真實個資，建議使用代號。 |
 | **Ⅴ. 印記** | 「我們是共謀者，而非孤島。」 | 歡迎使用小貼紙或文字與他人互動。 |
 
-<p align="center">
-  <br>
-  <a href="https://www.canva.com/design/DAHDeai_2h8/5YIZYUfOyY_02M-O3oZaSg/edit?utm_content=DAHDeai_2h8&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">
-    <b>✨ [ 在畫室中留下妳的痕跡 ] ✨</b>
-  </a>
-  <br>
-  <i>(點擊連結進入 Canva 共編空間)</i>
-</p>
+ [**✨ 在畫室中留下妳的痕跡 ✨**](https://www.canva.com/design/DAHDeai_2h8/5YIZYUfOyY_02M-O3oZaSg/edit?utm_content=DAHDeai_2h8&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ---
 <p align="center">© 2026 allieyeh. All Rights Reserved.</p>
