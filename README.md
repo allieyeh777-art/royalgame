@@ -32,6 +32,10 @@
 
 > **v1.1 更新日誌：** 優化美術效果、修正部分數值顯示。
 
+### 📜 往昔的指引 (攻略本)
+若妳在宮廷的迷霧中迷失了方向，這份被封存的紀錄或許能帶妳走向不同的終局：  
+👉 [**點此查看《冠冕》全結局攻略本**](https://docs.google.com/document/d/1b5JaJE5nbd1GbJkD2tb90NHu1fD6tfyLaWhvRju4n4M/edit?usp=sharing)
+
 ---
 
 ## 📝 旅人的回響
@@ -64,4 +68,4 @@
 </p>
 
 ---
-<p align="center">© 2026 allieyeh777-art. All Rights Reserved.</p>
+<p align="center">© 2026 allieyeh. All Rights Reserved.</p>
