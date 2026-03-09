@@ -35,7 +35,7 @@
 ---
 
 ## 📝 旅人的回響
-完成所有結局（共四個）的領主，請將妳的見證留在這裡：  
+完成所有結局（共四個）後，請將妳的見證留在這裡：  
 👉 [**填寫遊玩心得表單**](https://docs.google.com/forms/d/e/1FAIpQLSdYOHhOQu0nKoe4YZorWE3Zkj0k8VAK9Mezf_HQ3OXATIXZoA/viewform?usp=header)
 
 ---
