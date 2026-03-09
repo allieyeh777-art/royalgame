@@ -42,7 +42,7 @@ v1.1 更新美術效果及部分數值變動顯示
 
 火並未帶走一切。在此刻，請留下妳曾存在過的證明。
 
---
+
 祭壇誓約（使用規則）
 
 Ⅰ. 噤聲與低語
@@ -75,7 +75,7 @@ v1.1 更新美術效果及部分數值變動顯示
 
 看到喜歡的留言，歡迎在旁邊貼個小貼紙或文字回覆互動！
 
---
+
 
 [ 在祭壇上留下妳的痕跡 ](https://www.canva.com/design/DAHDeai_2h8/5YIZYUfOyY_02M-O3oZaSg/edit?utm_content=DAHDeai_2h8&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
