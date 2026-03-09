@@ -26,7 +26,7 @@
 ## 🎮 立即遊玩
 <p align="center">
   <a href="https://allieyeh777-art.github.io/royalgame/">
-    <img src="https://img.shields.io/badge/—_點此開啟妳的命運_—-white?style=fds&labelColor=black&fontSize=20px" height="50">
+    <img src="https://img.shields.io/badge/—_點此開啟妳的命運_—-white?style=fds&labelColor=black&fontSize=50px" height="100">
   </a>
 </p>
 
