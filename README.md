@@ -29,7 +29,7 @@
 ---
 
 ### 📑 攻略
-[**各項選項數值及各結局達成條件**](https://docs.google.com/document/d/1b5JaJE5nbd1GbJkD2tb90NHu1fD6tfyLaWhvRju4n4M/edit?usp=drivesdk)
+卡關請點[**攻略**](https://docs.google.com/document/d/1b5JaJE5nbd1GbJkD2tb90NHu1fD6tfyLaWhvRju4n4M/edit?usp=drivesdk)
 
 ### 📝 遊玩反饋
 如果你玩完並達成所有結局(共四個)，請幫我填寫 [**遊玩心得表單**](https://docs.google.com/forms/d/e/1FAIpQLSdYOHhOQu0nKoe4YZorWE3Zkj0k8VAK9Mezf_HQ3OXATIXZoA/viewform?usp=header)！
