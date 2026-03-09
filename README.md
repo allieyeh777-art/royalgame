@@ -32,8 +32,51 @@ v1.1 更新美術效果及部分數值變動顯示
 
 ---
 
-### 📑 攻略
-卡關請點[**攻略**](https://docs.google.com/document/d/1b5JaJE5nbd1GbJkD2tb90NHu1fD6tfyLaWhvRju4n4M/edit?usp=drivesdk)
-
 ### 📝 遊玩反饋
 如果你玩完並達成所有結局(共四個)，請幫我填寫 [**遊玩心得表單**](https://docs.google.com/forms/d/e/1FAIpQLSdYOHhOQu0nKoe4YZorWE3Zkj0k8VAK9Mezf_HQ3OXATIXZoA/viewform?usp=header)！
+
+---
+
+### 匿名留言板
+妳看見牆角散落著幾張空白的羊皮紙，旁邊還放著那一支染血的羽毛筆。
+
+火並未帶走一切。在此刻，請留下妳曾存在過的證明。
+
+祭壇誓約（使用規則）
+
+Ⅰ. 噤聲與低語
+
+「在此流動的應是靈魂的低語，而非惡意的噪音。凡汙穢、咒罵或跨越國境的狂言，都將被陰影抹除。請記住，王國的牆壁亦有耳朵。」
+
+請勿謾罵、人身攻擊或發表不當言論，管理員有權清理違規留言。
+
+Ⅱ. 記憶的定錨
+
+「每道筆跡都是一段封存的時光。請勿挪動他人的記憶。若妳隨意撥亂命運的經緯，妳也將在迷霧中失去歸處。」
+
+嚴禁移動或刪除他人的留言與圖案，請尊重每個人的創作。
+
+Ⅲ. 最後的遺產
+
+「妳可以修飾、可以點綴，甚至可以將妳的秘密折疊在角落。但請維持這片祭壇的優雅，畢竟，這可能是我們最後的遺產。」
+
+歡迎自由設計、畫圖或貼圖，但請保持畫布整潔美觀，不要惡意亂塗。
+
+Ⅳ. 禁忌之名
+
+「嚴禁提及那個『不該被說出的真實姓名』。請用代號、筆名或一個破碎的象徵來代表妳自己——影子是不需要名字的。」
+
+請勿留下真實姓名、社群帳號或個資，建議使用遊戲中的代號或匿名。
+
+Ⅴ. 共謀者的印記
+
+「若妳看見感興趣的殘章，請在下方留下一個小小的印記作為回應。我們是共謀者，而非孤島。」
+
+看到喜歡的留言，歡迎在旁邊貼個小貼紙或文字回覆互動！
+
+[ 在祭壇上留下妳的痕跡 ](https://www.canva.com/design/DAHDeai_2h8/5YIZYUfOyY_02M-O3oZaSg/edit?utm_content=DAHDeai_2h8&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
+---
+
+### 📑 攻略
+卡關請點[**攻略**](https://docs.google.com/document/d/1b5JaJE5nbd1GbJkD2tb90NHu1fD6tfyLaWhvRju4n4M/edit?usp=drivesdk)
