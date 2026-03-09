@@ -24,11 +24,7 @@
 ---
 
 ## 🎮 立即遊玩
-<p align="center">
-  <a href="https://allieyeh777-art.github.io/royalgame/">
-    <img src="https://img.shields.io/badge/—_點此開啟妳的命運_—-white?style=for-the-badge&labelColor=black" height="100">
-  </a>
-</p>
+👉 [**點此開啟妳的命運**](https://allieyeh777-art.github.io/royalgame/)
 
 > **v1.1 更新日誌：** 優化美術效果、修正部分數值顯示。
 
