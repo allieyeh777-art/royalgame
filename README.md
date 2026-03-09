@@ -74,6 +74,7 @@ v1.1 更新美術效果及部分數值變動顯示
 「若妳看見感興趣的殘章，請在下方留下一個小小的印記作為回應。我們是共謀者，而非孤島。」
 
 看到喜歡的留言，歡迎在旁邊貼個小貼紙或文字回覆互動！
+
 --
 
 [ 在祭壇上留下妳的痕跡 ](https://www.canva.com/design/DAHDeai_2h8/5YIZYUfOyY_02M-O3oZaSg/edit?utm_content=DAHDeai_2h8&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
