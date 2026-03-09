@@ -4,6 +4,40 @@
     <meta charset="UTF-8">
     <title>冠冕</title>
     <style>
+        /* 定義跳動動畫 */
+        @keyframes glitch-anim {
+            0% { transform: translate(0); text-shadow: -2px 0 red, 2px 0 blue; }
+            20% { transform: translate(-2px, 2px); text-shadow: 2px 0 red, -2px 0 blue; }
+            40% { transform: translate(-2px, -2px); text-shadow: -2px 0 green, 2px 0 red; }
+            60% { transform: translate(2px, 2px); text-shadow: 2px 0 blue, -2px 0 green; }
+            80% { transform: translate(2px, -2px); text-shadow: -2px 0 red, 2px 0 blue; }
+            100% { transform: translate(0); }
+        }
+
+        /* 建立亂碼專用的類別 */
+        .glitch {
+            display: inline-block;
+            font-family: 'Courier New', monospace; /* 使用等寬字體更有程式錯誤感 */
+            font-weight: bold;
+            color: #ff4d4d; /* 妳可以改成妳想要的顏色，例如酒紅 */
+            animation: glitch-anim 0.25s infinite; /* 數字越小跳動越快 */
+            position: relative;
+        }
+
+        .note {
+            background-color: #fdf5e6; /* 淡淡的紙張米黃色 */
+            color: #2c3e50;            /* 深藍灰色的墨水色 */
+            padding: 20px;
+            margin: 15px auto;
+            width: 80%;
+            border-left: 5px solid #d4af37; /* 金色的邊緣暗示公爵府的格調 */
+            font-family: 'Zhi Mang Xing', cursive; /* 使用手寫字體 */
+            font-size: 1.4em;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3); /* 陰影讓紙張有立體感 */
+            line-height: 1.5;
+            transform: rotate(-1deg);  /* 稍微歪一點，更有隨手塞入的感覺 */
+        }
+
         body {
             background-color: #1a1a1a;
             color: #e0e0e0;
