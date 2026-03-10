@@ -49,8 +49,9 @@
             margin: 0;
         }
         #game-container {
-            width: 80%;
+            width: 100%;
             max-width: 800px;
+            margin: 0 auto;
             background-color: #2d2d2d;
             padding: 30px;
             border-radius: 10px;
@@ -103,28 +104,158 @@
         }
         .highlight { color: #d4af37; font-weight: bold; }
         .system-msg { color: #888; font-style: italic; font-size: 0.9em; }
+
+        #main-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000; /* 黑色底色確保不會透視 */
+            z-index: 9999; /* 極高層級，絕對壓在最上方 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #save-modal {
+            display: none; /* 初始隱藏，由 JS 切換 */
+            position: fixed; /* 固定在螢幕上 */
+            top: 0;
+            left: 0;
+            width: 100vw; /* 撐滿全螢幕寬度 */
+            height: 100vh; /* 撐滿全螢幕高度 */
+            background: rgba(0, 0, 0, 0.9); /* 深色半透明背景 */
+            z-index: 99999; /* 確保在所有畫面最上層 */
+            
+            /* 讓裡面的內容居中 */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-title {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 10px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        .menu-buttons button {
+            display: block;
+            width: 200px;
+            margin: 15px auto;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .menu-buttons button:hover:not(:disabled) {
+            background: #d4af37;
+            color: black;
+            box-shadow: 0 0 10px #d4af37;
+        }
+
+        .menu-buttons button:disabled {
+            border-color: #555;
+            color: #555;
+            cursor: not-allowed;
+        }
+
+        .save-content {
+            background: #1a1a1a;
+            border: 2px solid #d4af37; /* 金色邊框 */
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            color: #d4af37;
+        }
+
+        .save-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 兩欄 */
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .save-grid button {
+            background: transparent;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .save-grid button:hover {
+            background: #d4af37;
+            color: #000;
+        }
+
     </style>
 </head>
 <body>
 
-<div id="game-container">
-    <div id="stats-panel">
-        <div>角色: <span id="stat-name">待定</span></div>
-        <div>皇太子好感度: <span id="stat-prince">0</span></div>
-        <div>騎士好感度: <span id="stat-knight">0</span></div>
-        <div>權力地位: <span id="stat-power">0</span></div>
-        <div>家族認可: <span id="stat-family">0</span></div>
-        <div>？？: <span id="stat-mystery">0</span></div>
+    <div id="main-menu">
+        <div class="menu-content">
+            <h1 class="game-title">冠冕</h1>
+            <p class="game-subtitle">The Crown</p>
+            
+            <div class="menu-buttons">
+                <button onclick="startNewGame()">開始新遊戲</button>
+                <button id="continue-btn" onclick="toggleSaveMenu('load')" disabled>繼續遊戲</button>
+                <button onclick="showCollection()">成就與道具</button> </div>
+                <button onclick="toggleSettings()">設定</button>
+            </div>
+        </div>
     </div>
 
-    <div id="story-text"></div>
-
-    <div id="interaction-area" class="options">
+    <div id="game-container">
+        <div id="stats-panel">
+            <div>角色: <span id="stat-name">待定</span></div>
+            <div>皇太子好感度: <span id="stat-prince">0</span></div>
+            <div>騎士好感度: <span id="stat-knight">0</span></div>
+            <div>權力地位: <span id="stat-power">0</span></div>
+            <div>家族認可: <span id="stat-family">0</span></div>
+            <div>？？: <span id="stat-mystery">0</span></div>
+            <button class="save-menu-btn" onclick="toggleSaveMenu('save')">存檔</button>
         </div>
-</div>
+
+        <div id="story-text"></div>
+
+        <div id="interaction-area" class="options">
+            </div>
+
+        <div id="save-modal" style="display: none;">
+            <div class="save-content">
+                <h3>選擇存檔欄位</h3>
+                <div class="save-grid">
+                    <button onclick="handleSlotClick(1)">欄位 1</button>
+                    <button onclick="handleSlotClick(2)">欄位 2</button>
+                    <button onclick="handleSlotClick(3)">欄位 3</button>
+                    <button onclick="handleSlotClick(4)">欄位 4</button>
+                    <button onclick="handleSlotClick(5)">欄位 5</button>
+                    <button onclick="handleSlotClick(6)">欄位 6</button>
+                </div>
+                <button onclick="toggleSaveMenu()">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="collection-modal" style="display: none;">
+            <div class="modal-content">
+                <div id="ending-list"></div>
+                <div id="item-list"></div>
+                <button onclick="closeCollection()">返回</button>
+            </div>
+    </div>
 
 <script src="script.js"></script>
 
 </body>
 </html>
-
