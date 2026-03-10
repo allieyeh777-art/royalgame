@@ -1,5 +1,8 @@
 const storyEl = document.getElementById('story-text');
 const interactionEl = document.getElementById('interaction-area');
+
+let currentChapterID = "";
+let currentMenuMode = "save"
 let player = {
     name: "",
     power: 0,
@@ -10,6 +13,134 @@ let player = {
     achievements: [],
     east: false
 };
+
+// 存檔
+
+//存檔開關
+function setSaveAbility(canSave) {
+    const saveBtn = document.querySelector('.save-menu-btn');
+    if (!saveBtn) return;
+
+    if (canSave) {
+        saveBtn.disabled = false;
+        saveBtn.style.opacity = "1";
+        saveBtn.style.cursor = "pointer";
+        saveBtn.innerHTML = "存檔";
+    } else {
+        saveBtn.disabled = true;
+        saveBtn.style.opacity = "0.5";
+        saveBtn.style.cursor = "not-allowed";
+        saveBtn.innerHTML = "暫時無法存檔";
+    }
+}
+
+let allSaves = JSON.parse(localStorage.getItem('crown_all_saves')) || {
+    slot1: null,
+    slot2: null,
+    slot3: null,
+    slot4: null,
+    slot5: null,
+    slot6: null
+};
+
+function saveToSlot(slotNumber) {
+    const saveData = {
+        playerName: player.name,
+        stats: { ...player.stats }, // 複製數值
+        currentChapter: currentChapterID, // 記錄現在在哪一章
+        timestamp: new Date().toLocaleString() // 記錄存檔時間
+    };
+    
+    allSaves[`slot${slotNumber}`] = saveData;
+    localStorage.setItem('crown_all_saves', JSON.stringify(allSaves));
+    alert(`進度已儲存至欄位 ${slotNumber}`);
+
+    toggleSaveMenu();
+}
+
+function toggleSaveMenu(mode) {
+    const saveModal = document.getElementById('save-modal');
+    if (!saveModal) return;
+    if (mode) currentMenuMode = mode;
+
+    if (mode) {
+        currentMenuMode = mode;
+    } else {
+        // 如果是空的，且現在選單是關閉的，預設設為 'save'
+        if (saveModal.style.display === 'none' || saveModal.style.display === '') {
+            currentMenuMode = "save";
+        }
+    }
+    
+    // 如果現在是隱藏的，就把它變出來；如果是顯示的，就把它藏起來
+    if (saveModal.style.display === 'none' || saveModal.style.display === '') {
+        saveModal.style.display = 'flex'; // 用 flex 可以配合 CSS 居中
+        const title = saveModal.querySelector('h3');
+        if (title) title.innerText = currentMenuMode === "save" ? "── 儲存進度 ──" : "── 載入進度 ──";
+        updateSaveSlotsUI(); // 順便更新一下 1~6 號欄位顯示的時間
+    } else {
+        saveModal.style.display = 'none';
+    }
+}
+
+function handleSlotClick(slotNumber) {
+    if (currentMenuMode === "save") {
+        saveToSlot(slotNumber);
+    } else {
+        loadFromSlot(slotNumber);
+    }
+}
+
+function updateSaveSlotsUI() {
+    const savedData = JSON.parse(localStorage.getItem('crown_all_saves')) || {};
+    
+    for (let i = 1; i <= 6; i++) {
+        const slot = savedData[`slot${i}`];
+        // 抓取妳 HTML 裡面對應的按鈕（假設妳是用 .save-grid 裡面的按鈕）
+        const btn = document.querySelector(`.save-grid button:nth-child(${i})`);
+        
+        if (btn) {
+            if (slot) {
+                btn.innerHTML = `欄位 ${i}<br><span style="font-size:10px;">${slot.timestamp}</span>`;
+            } else {
+                btn.innerHTML = `欄位 ${i}<br><span style="font-size:10px;">── 空 ──</span>`;
+            }
+        }
+    }
+}
+
+//讀取
+function loadFromSlot(slotNumber) {
+    const allSaves = JSON.parse(localStorage.getItem('crown_all_saves'));
+    const slot = allSaves ? allSaves[`slot${slotNumber}`] : null;
+
+    if (!slot || !slot.currentChapter) {
+        alert("存檔毀損或此欄位無資料。");
+        return;
+    }
+
+    // 1. 還原數值
+    player.name = slot.playerName;
+    player.stats = { ...slot.stats };
+
+    // 2. 檢查函式是否存在
+    const targetChapter = window[slot.currentChapter];
+
+    if (typeof targetChapter === "function") {
+        // 先切換畫面，再執行劇情
+        document.getElementById('main-menu').style.display = 'none';
+        document.getElementById('game-container').style.display = 'block';
+        toggleSaveMenu();
+        
+        // 執行劇情
+        targetChapter(); 
+        console.log("讀取成功：" + slot.currentChapter);
+    } else {
+        // 這是預防空白畫面的關鍵！
+        alert(`讀取失敗！找不到劇情點：${slot.currentChapter}\n請確認章節名稱是否正確。`);
+        // 留在主選單，不要跳轉畫面
+    }
+}
 
 function updateStats() {
     document.getElementById('stat-name').innerHTML = player.name;
@@ -24,10 +155,61 @@ function writeStory(text) {
     storyEl.innerHTML = text;
 }
 
-// 初始化啟動
-initGame();
+function backToMenu() {
+    // 隱藏遊戲，顯示主選單
+    document.getElementById('game-container').style.display = 'none';
+    document.getElementById('main-menu').style.display = 'flex';
+    
+    // 徹底重置目前的遊戲變數（但 localStorage 裡的存檔不會動）
+    resetStats(); 
+    
+    // 檢查「繼續遊戲」按鈕是否該亮起來
+    checkContinueButton();
+}
+
+window.onload = function() {
+    checkContinueButton();
+}
+
+function checkContinueButton() {
+    const continueBtn = document.getElementById('continue-btn');
+    // 檢查有沒有任何一個存檔欄位是有資料的
+    const savedData = localStorage.getItem('crown_all_saves');
+    
+    if (savedData) {
+        // 如果有存檔紀錄，就把按鈕啟用
+        if (continueBtn) continueBtn.disabled = false;
+    }
+}
+
+function resetStats() {
+    player.name = "";
+    player.favor_knight = 0;
+    player.favor_prince = 0;
+    player.family = 0;
+    player.power = 0;
+    player.mystery = 0;
+    currentChapterID = "";
+    setSaveAbility(false);
+    console.log("數值已歸零");
+}
 
 // --- 遊戲流程 ---
+
+function startNewGame() {
+    // 隱藏主畫面，顯示遊戲內容
+    document.getElementById('main-menu').style.display = 'none';
+    document.getElementById('game-container').style.display = 'block';
+    
+    // 初始化遊戲數值
+    resetStats(); 
+    initGame(); // 從第一章開始
+}
+
+function toggleSettings() {
+    alert("設定功能開發中：包含文字速度、音量調節等。");
+    // 這裡之後可以做一個彈窗 (Modal)
+}
 
 function initGame() {
     updateStats();
@@ -58,6 +240,8 @@ function chapter0() {
 // 第一章
 // 第一章：馬車場景
 function chapter1_0() {
+    currentChapterID = "chapter1_0";
+    setSaveAbility(true);
     writeStory(`【 第一章 】<br><br>時間：1452年深秋 ，地點：通往帝都的馬車<br><br>窗外的景色飛速後退，枯黃的落葉被馬蹄踏碎。妳坐在裝飾華麗卻冰冷的馬車內，指尖不自覺地摩挲著粗糙的修道院長袍。那是妳與過去唯一的聯繫。<br>「小姐，」隨行的老管家咳嗽了一聲，語氣冷淡：「請記住，進入公爵府後，您不再是修道院的『無名者』。您是羅維恩公爵家的長女。至於莉薇安小姐……她是您的妹妹。請務必維持體面。」<br><br>權力地位：5 社交界對妳一無所知，甚至有人在暗中嘲笑妳的修女背景<br>家族認可：10 公爵承認妳的身份，但目前僅視妳為「聯姻工具」<br>？？：0 妳尚未被<span class='glitch'>cPxj6J6o</span>的惡意侵蝕
     `);
     player.power += 5; player.family += 10;
@@ -71,16 +255,17 @@ function chapter1_0() {
 
 // 第一章：抵達公爵府（莉薇安出現）
 function chapter1_1() {
+    setSaveAbility(false);
     writeStory(`地點：公爵家大門口<br><br>馬車停在了宏偉的石柱前。公爵夫婦已在門口等候。<br>羅維恩公爵他審視你的目光像是在評估一件新入庫的商品：「回來就好。教會把你教導得很安靜，很好。」<br>公爵夫人則顯得有些侷促，她想上前握你的手，卻在半路縮了回去，轉而看向身側。那正是這十六年代替妳的假千金——莉薇安。她穿著時下最流行的淡藍色絲綢長裙，笑容完美得無可挑剔。<br><br>「姐姐，」莉薇安提起裙擺，行了一個優雅至極的宮廷禮，「這十六年來，辛苦妳在外面受苦了。以後，這裡就是妳的家，我會幫妳適應這一切的。」<br><br>面對莉薇安那完美到近乎虛假的歡迎，以及父母的注視，你的第一步打算怎麼做？`);
     
     interactionEl.innerHTML = `
-        <button onclick="choice1('A')">【安靜接受】 </button>
-        <button onclick="choice1('B')">【冷靜觀察】 </button>
-        <button onclick="choice1('C')">【尋求依賴】 </button>
+        <button onclick="choice1_1('A')">【安靜接受】 </button>
+        <button onclick="choice1_1('B')">【冷靜觀察】 </button>
+        <button onclick="choice1_1('C')">【尋求依賴】 </button>
     `;
 }
 
-function choice1(type) {
+function choice1_1(type) {
     if(type === 'A') { 
         writeStory(`你微微低頭避開視線，輕聲回禮：「謝謝妹妹，我會努力學習規矩的。」<br>公爵滿意地點了點頭：「很好，看來修道院至少教會了妳什麼是分寸。莉薇安，這幾天妳就多費心，別讓她在下週的皇家茶會上出醜。」<br>莉薇安親暱地挽起你的手，湊近你耳邊吐氣如蘭，聲音卻冷得沒有溫度：「姐姐這麼聰明，一定學得很快的。畢竟……妳也不想再回到那個貧窮的修道院吧？」<br>你感覺到她的指甲輕輕陷入你的手臂，這是一次無聲的警告。<br><br><b>家族對妳的態度似乎緩和了一點，妳在貴族圈中的存在感稍微提高</b>`);
         player.family += 5; player.power += 5; }
@@ -163,6 +348,8 @@ function choice1_3(type) {
 
 // 第二章
 function chapter2_1() {
+    currentChapterID = "chapter2_1";
+    setSaveAbility(true);
     writeStory(`【 第二章 】<br><br>來到公爵家的第三天，為了正式確認妳的「羅維恩」身分，妳必須在公爵府的私人禮拜堂接受「聖水洗禮」。這不僅是宗教儀式，更是一場政治審查。<br><br>地點：禮拜堂<br><br>空氣中瀰漫著濃郁的沒藥與薰香味道。莉薇安站在公爵夫人身邊，身著潔白的祈禱裙，宛如聖女。而妳站在中央，面對著那位眼神銳利、彷彿能洞察靈魂的主教。<br>「${player.name} 羅維恩。」主教手中的權杖輕敲地面，發出沉悶的響聲，「在女神的見證下，妳的過去已隨風而逝。但妳的靈魂……是否已經準備好承擔起這個姓氏背後的沉重？」<br>他話音剛落，妳注意到他的眼神在妳那雙黯淡的綠色瞳孔上停留了許久。在洗禮過程中，主教要求妳將手伸入裝滿聖水的金盆，並對女神許下一個誓言。`);
     
     interactionEl.innerHTML = `
@@ -173,6 +360,7 @@ function chapter2_1() {
 }
 
 function choice2_1(type) {
+    setSaveAbility(false);
     if(type === 'A') { 
         writeStory(`「我誓將維護王國的穩定與公爵家的榮耀，遵從女神與教會的引領。」<br>主教露出了慈祥的微笑，將聖水灑在妳的額頭：「好孩子。女神喜歡守規矩的人。」莉薇安在一旁低下頭。<br><br><b>妳的影響力正在逐漸擴大，家族對妳的評價明顯提升，那些模糊的不適感逐漸遠離</b>`)
         player.power += 10;player.family += 10; player.mystery -= 10; }
@@ -256,6 +444,8 @@ function choice2_3(type) {
 
 // 第三章
 function chapter3_1() {
+    currentChapterID = "chapter3_1";
+    setSaveAbility(true);
     writeStory(`【 第三章 】<br><br>洗禮儀式與西塔的秘密被妳暫時壓在心底。半個月後，阿爾德王國迎來了最盛大的季節——秋獵祭。這不僅是獵殺獵物的戰場，更是決定誰能站上「王后候選人」位置的修羅場。妳與莉薇安坐在公爵家的豪華馬車上，前往郊外的皇家獵場。<br><br>地點：皇家獵場<br><br>獵場上旗幟飄揚，皇太子艾德里安騎在一匹雪白的駿馬上，顯得高不可攀。而羅倫斯則全副武裝，作為守衛騎士之一，遠遠地向妳點頭示意。<br><br>莉薇安今日穿著一襲火紅色的獵裝，棕髮高高紮起，顯得英氣逼人。她故意湊近妳，遞過來一條繡著黑色鬱金香的手帕，聲音甜得發膩：「姐姐，獵場風大塵多。這帕子是我親手繡的，送給妳遮掩一下。對了，待會兒殿下若是獵到了雪狐，按照傳統是要送給在場最心儀的女士的……妳說，會是誰呢？」<br><br>妳低頭看著那朵黑色鬱金香，那扭曲的線條與畫室檔案上的紅色戳記如出一轍。這不是禮物，這是莉薇安的明牌試探——她知道妳去過西塔了。<br><br>面對莉薇安帶有威脅意味的「餽贈」，妳打算如何應對？`)
     
     interactionEl.innerHTML = `
@@ -266,6 +456,7 @@ function chapter3_1() {
 }
 
 function choice3_1(type) {
+    setSaveAbility(false);
     if(type === 'A') { 
         writeStory(`妳優雅地接過手帕，當著她的面輕拭指尖：「謝謝妹妹。這花紋確實特別，讓我想起在修道院時看過的某些『古老殘卷』，總覺得背後藏著什麼故事呢。」莉薇安的笑容僵硬了一瞬。<br><br>此時皇太子策馬過來，他銀色的髮絲在陽光下泛著冷冽的光澤，目光落在妳指尖那朵黑色鬱金香上，停留了一瞬。他的眼神微微變深，「這個花紋……」他語氣似乎只是隨口一提，「我還以為早就沒人記得了。」<br><br>妳的影響力正在逐漸擴大，一種說不清的違和感在心底閃過`)
         player.power += 10; player.mystery += 5; }
@@ -389,6 +580,8 @@ function choice3_4(type) {
 }
 
 function chapter4_0() {
+    currentChapterID = "chapter4_0";
+    setSaveAbility(true);
     writeStory(`莉薇安因為「精神不穩定」被送往療養院，公爵府暫時恢復了平靜，妳的名字也因此在王城傳開，妳在貴族圈中的存在感稍微提高。<br><br>然而，平靜的日子並未持續太久，北境因為連年饑荒與沉重的教會賦稅，終於爆發了血腥的「糧食叛亂」。<br><br>災民燒毀了稅官的府邸，宣稱要奪回被貴族掠奪的生命。國王命令皇太子艾德里安親征，並指名由代表羅維恩家族名望的妳隨軍發放賑災糧草，以此平息民憤並彰顯皇室的慈悲，但你知道國王真正的目的是希望藉此讓公爵府背下北境的怒火。`)
     player.power += 5;
     updateStats();
@@ -397,6 +590,7 @@ function chapter4_0() {
 }
 
 function chapter4_1() {
+    setSaveAbility(false);
     writeStory(`北境軍事營帳 深夜<br><br>外頭寒風如刀，劃過皮革帳篷發出尖銳的聲響。妳坐在桌前，看著手中那份由公爵親自批閱的糧草清單。妳敏銳地發現，清單上的數額與實際裝車的數量有巨大的落差——有人在暗中中飽私囊，而這極可能是引發叛亂的導火線。<br><br>「大小姐，這麼晚了還在對帳，是擔心那些災民吃不飽，還是擔心公爵大人的聲譽？」皇太子艾德里安掀簾而入，他剛巡視完前線，銀髮沾著雪沫，金色的眼瞳在燭光下顯得深不可測。他走到妳身邊，修長的手指壓在那份帳單上：「妳父親給妳的這份清單，如果是真的，那北境就不會有叛亂了。妳打算把這個真相爛在肚子裡，還是……跟我做個交易？」<br><br>羅倫斯隨後踏入營帳，他立刻察覺到艾德里安的侵略性，迅速跨步擋在妳案前，語氣冰冷：「殿下，軍務繁忙，大小姐的私事不勞您費心。大小姐，馬車已經準備好了，如果您覺得累，我們可以立刻啟程回後方。」<br><br>面對父親可能涉及的貪腐證據，以及皇太子與騎士的對峙，妳打算如何處理這份足以毀掉羅維恩家族名聲的帳單？`)
     interactionEl.innerHTML = `
         <button onclick="choice4_1('A')">【坦白】</button>
@@ -467,6 +661,8 @@ function choice4_2_2(type) {
 }
 
 function chapter5_1() {
+    currentChapterID = "chapter5_1";
+    setSaveAbility(true);
     writeStory(`地點：公爵府 深夜<br><br>外頭的暴雨拍打著彩色玻璃，室內燃著昂貴的檀香。公爵夫人屏退了所有人，單獨留下了妳。她面前擺著兩套禮服：一套是莉薇安最愛的純白蕾絲，一套是為妳準備的、冰冷肅穆的深綠色絲絨。<br><br>「莉薇安在哭。」夫人垂下眼簾，手指輕撫著那套純白禮服，語氣帶著一種病態的溫柔，「她說妳在北境受了苦，甚至怪我沒有給妳足夠的庇護……她總是這麼貼心，完美得像我親手畫出來的畫。」<br><br>她轉過頭，看向妳那雙暗沉的綠色眼睛，眼神中閃過一絲痛苦的掙扎，隨即又被冷漠掩蓋： 「但妳才是我的血脈。每一次看到妳，都在提醒我這十幾年我有多失敗。妳為什麼不能像她一樣，安安靜靜地當一個精緻的木偶？我只是希望妳不要再受傷，這個世界不適合太清醒的女孩。」`)
     interactionEl.innerHTML = `
         <button onclick="choice5_1('A')">【撕碎母愛的假象】</button>
@@ -476,6 +672,7 @@ function chapter5_1() {
 }
 
 function choice5_1(type) {
+    setSaveAbility(false);
     if(type === 'A') { 
         writeStory(`妳拿起剪刀，剪掉她替妳準備的綠色禮服的標籤。「母親，您愛的不是莉薇安，您愛的是那份『完美』。莉薇安在北境私吞糧草時，想的可不是您的體面。您還要自欺欺人到什麼時候？承認吧，您對我的愧疚，讓您連直視我的勇氣都沒有。」<br><br>夫人崩潰地掩面痛哭。這份愧疚感被妳徹底挑明後，她會因為無法面對妳而選擇避世，將管家權交給妳。<br><br>妳的權勢與地位顯著上升，家族對妳的評價明顯下降，妳隱約感到有什麼正在悄悄改變`)
         player.mystery += 15; player.power += 20; player.family -= 10 }
@@ -520,6 +717,8 @@ function choice5_2(type) {
 }
 
 function chapter6() {
+    currentChapterID = "chapter6";
+    setSaveAbility(true);
     writeStory(`地點：聖潔祈禱室<br><br>加冕儀式前的最後一個小時。窗外的鐘聲規律地敲擊著，每一聲都像是喪鐘。<br><br>妳獨自坐在鑲嵌著彩色玻璃的室內，身上穿著沉重得讓人窒息的黑色天鵝絨禮服，胸前佩戴著象徵羅維恩家主的族徽。鏡子裡的妳，臉色蒼白，那雙混濁的綠色眼眸在搖曳的燭火下，顯得深不見底。<br><br>這時，三道腳步聲分別從不同的門扉傳來。<br><br>妳的選擇是？`)
     const interactionEl = document.getElementById('interaction-area');
     let availableButtons = [];
@@ -563,7 +762,7 @@ function endingA(step){
     }
     if (step === 2) {
         writeStory(`「妳後悔嗎？」\n妳沒有回答，妳看著城下燈火然後淡淡地說：「後悔是給弱者的奢侈品。」\n他笑了，那笑容不是溫柔，是認可。\n\n達成結局：【惡魔的共犯】`)
-        interactionEl.innerHTML = `<button onclick="location.reload()">重新開始</button>`;
+        interactionEl.innerHTML = `<button onclick="backToMenu()">重新開始</button>`;
     }
     
 }
@@ -594,7 +793,7 @@ function endingB(step){
     }
     if (step === 2) {
         writeStory(`北境的冬天漫長，妳活著，妳自由。<br><br>某日清晨，妳醒來發現門被反鎖了。不是為了防敵，是為了防妳。<br>窗外風雪正盛，羅倫斯回頭眼神平靜「外面太冷了，妳不適合那個世界。」<br><span class='glitch'>「妳只適合我。」</span><br><br>暴風雪遮住了遠方，妳終於明白，妳逃離了王座，卻走進了另一座王國。<br><br>達成結局：【永冬的囚鳥】`)
-        interactionEl.innerHTML = `<button onclick="location.reload()">重新開始</button>`;
+        interactionEl.innerHTML = `<button onclick="backToMenu()">重新開始</button>`;
     }
 }
 function endingC(step){
@@ -620,7 +819,7 @@ function endingC(step){
     }
     if (step === 2) {
         writeStory(`一年後的邊境談判桌上，王室不得不承認羅維恩的半自治地位。<br>史書寫道：「羅維恩女公爵——第一位拒絕王冠，卻仍然戴上權力的人。」<br><br>夜深時，妳獨自站在書房，桌上堆滿軍報與財務帳冊。<br>妳看著那枚族徽忽然想起祈禱室的鐘聲。妳不是沒有孤單，妳只是選擇與它共存。<br>但至少，這每一步都是妳自己選的。<br><br>達成結局：【無冕之后】`)
-        interactionEl.innerHTML = `<button onclick="location.reload()">重新開始</button>`;
+        interactionEl.innerHTML = `<button onclick="backToMenu()">重新開始</button>`;
     }
 }
 function endingF(step){
@@ -641,7 +840,7 @@ function endingF(step){
         setTimeout(() => { storyEl.innerHTML += "<br><br>妳忽然想起一件小事。<br>那年春天，花園裡的黑色鬱金香開得極盛，妳曾親手剪下一朵卻忘了澆水。它枯死得很快，就像現在。"; }, 3500);
         setTimeout(() => { 
             storyEl.innerHTML += "<br><br>鐘聲落下最後一響。<br>妳閉上眼。<br>沒有王冠。<br>沒有神<br>沒有逃亡<br>只有寂靜<br><br>這場博弈中，妳唯一的自由，是選擇如何退場。<br><br>達成結局：【凋零的黑色鬱金香】";
-            interactionEl.innerHTML = `<button onclick="location.reload()">重新開始</button>`;
+            interactionEl.innerHTML = `<button onclick="backToMenu()">重新開始</button>`;
         }, 5500);
     }
 
