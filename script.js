@@ -46,15 +46,21 @@ let allSaves = JSON.parse(localStorage.getItem('crown_all_saves')) || {
 function saveToSlot(slotNumber) {
     const saveData = {
         playerName: player.name,
-        stats: { ...player.stats }, // 複製數值
-        currentChapter: currentChapterID, // 記錄現在在哪一章
-        timestamp: new Date().toLocaleString() // 記錄存檔時間
+        // 手動打包現在的數值
+        stats: {
+            power: player.power,
+            family: player.family,
+            mystery: player.mystery,
+            favor_prince: player.favor_prince,
+            favor_knight: player.favor_knight
+        },
+        currentChapter: currentChapterID,
+        timestamp: new Date().toLocaleString()
     };
     
     allSaves[`slot${slotNumber}`] = saveData;
     localStorage.setItem('crown_all_saves', JSON.stringify(allSaves));
-    alert(`進度已儲存至欄位 ${slotNumber}`);
-
+    alert(`進度已儲存！`);
     toggleSaveMenu();
 }
 
@@ -119,26 +125,35 @@ function loadFromSlot(slotNumber) {
         return;
     }
 
-    // 1. 還原數值
+    // 1. 還原數值 (直接還原到 player 物件上，不要多一層 .stats)
     player.name = slot.playerName;
-    player.stats = { ...slot.stats };
+    
+    // 如果妳存檔時是存在 stats 裡，讀取也要對應好
+    // 這裡我們把存檔裡的數值一個個搬回 player
+    if (slot.stats) {
+        player.power = slot.stats.power || 0;
+        player.family = slot.stats.family || 0;
+        player.mystery = slot.stats.mystery || 0;
+        player.favor_prince = slot.stats.favor_prince || 0;
+        player.favor_knight = slot.stats.favor_knight || 0;
+    }
 
-    // 2. 檢查函式是否存在
+    // 2. 顯示更新 (這行就是妳缺少的！)
+    if (typeof updateStats === "function") {
+        updateStats(); 
+    }
+
+    // 3. 執行劇情跳轉
     const targetChapter = window[slot.currentChapter];
-
     if (typeof targetChapter === "function") {
-        // 先切換畫面，再執行劇情
         document.getElementById('main-menu').style.display = 'none';
         document.getElementById('game-container').style.display = 'block';
-        toggleSaveMenu();
+        if (typeof toggleSaveMenu === "function") toggleSaveMenu();
         
-        // 執行劇情
         targetChapter(); 
-        console.log("讀取成功：" + slot.currentChapter);
+        console.log("讀取成功，數值已更新");
     } else {
-        // 這是預防空白畫面的關鍵！
-        alert(`讀取失敗！找不到劇情點：${slot.currentChapter}\n請確認章節名稱是否正確。`);
-        // 留在主選單，不要跳轉畫面
+        alert(`讀取失敗！找不到劇情點：${slot.currentChapter}`);
     }
 }
 
@@ -845,3 +860,4 @@ function endingF(step){
     }
 
 }
+
