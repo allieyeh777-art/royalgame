@@ -1,7 +1,7 @@
 # 👑 冠冕 (The Crown)
 
 <p align="center">
-  <img src="https://img.shields.io/badge/當前版本-v1.2-goldenrod?style=for-the-badge">
+  <img src="https://img.shields.io/badge/當前版本-v1.2.1-goldenrod?style=for-the-badge">
   <img src="https://img.shields.io/badge/當前結局數-4個-brown?style=for-the-badge">
 </p>
 
